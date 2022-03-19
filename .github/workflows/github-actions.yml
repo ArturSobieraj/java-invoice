@@ -1,15 +1,18 @@
 name: CI for Java Invoice
-on: [push]
+on: [ push ]
 jobs:
-  test:
-    name: Unit tests
+  test15:
+    name: Unit tests 15
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+         jdk: [ 8, 13, 15 ]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '15'
+          java-version: ${{matrix.jdk}}
           distribution: 'adopt'
       - name: Test
         run: mvn test
