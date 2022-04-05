@@ -7,11 +7,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.edu.agh.mwo.invoice.Invoice;
 import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.OtherProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
 import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
+
+import static junit.framework.TestCase.*;
+import static org.junit.Assert.assertNotEquals;
 
 public class InvoiceTest {
     private Invoice invoice;
@@ -124,5 +126,30 @@ public class InvoiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testAddingNullProduct() {
         invoice.addProduct(null);
+    }
+
+    @Test
+    public void testAddingInvoiceNumber() {
+        assertNotNull(invoice.getInvoiceNumber());
+    }
+
+    @Test
+    public void testInvoiceNumberPositive() {
+        assertTrue(invoice.getInvoiceNumber() > 0);
+    }
+
+    @Test
+    public void testInvoiceNumbersAreDifferent() {
+        Invoice invoice2 = new Invoice();
+        assertNotEquals(invoice.getInvoiceNumber(), invoice2.getInvoiceNumber());
+    }
+
+    @Test
+    public void testInvoiceNumberIsSameWhileAddingProducts() {
+        int invoiceNumberBeforeAddingProducts = invoice.getInvoiceNumber();
+        invoice.addProduct(new TaxFreeProduct("Owoce", new BigDecimal("200")));
+        invoice.addProduct(new DairyProduct("Maslanka", new BigDecimal("100")));
+        int invoiceNumberAfterAddingProducts = invoice.getInvoiceNumber();
+        assertEquals(invoiceNumberBeforeAddingProducts, invoiceNumberAfterAddingProducts);
     }
 }
