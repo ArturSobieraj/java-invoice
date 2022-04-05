@@ -77,7 +77,7 @@ public class Invoice {
             String price = String.valueOf(getGrossTotal(entry));
             builder.append("\t")
                     .append(productName)
-                    .append(" ".repeat(20 - productName.length()))
+                    //.append(" ".repeat(20 - productName.length()))
                     .append("Quantity: ")
                     .append(quantity)
                     .append("   ")
