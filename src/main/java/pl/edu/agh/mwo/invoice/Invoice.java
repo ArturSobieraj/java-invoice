@@ -1,14 +1,17 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import pl.edu.agh.mwo.invoice.product.Product;
 
 public class Invoice {
     private Integer invoiceNumber;
-    private static Set<Integer> invoiceHolder = new HashSet<>(); //symulacja bazy danych
-    private Map<Product, Integer> products = new HashMap<Product, Integer>();
+    private static final Set<Integer> invoiceHolder = new HashSet<>(); //symulacja bazy danych
+    private final Map<Product, Integer> products = new HashMap<>();
     private final Random random = new Random();
 
     public Invoice() {
@@ -26,11 +29,17 @@ public class Invoice {
         if (product == null || quantity <= 0) {
             throw new IllegalArgumentException();
         }
-        products.put(product, quantity);
+        if (products.containsKey(product)) {
+            Integer oldQuantity = products.get(product);
+            products.put(product, oldQuantity + quantity);
+        } else {
+            products.put(product, quantity);
+        }
     }
 
     public void generateNumber() {
-        invoiceNumber = random.nextInt(1000000);
+        final int randomBound = 1000000;
+        invoiceNumber = random.nextInt(randomBound);
         if (invoiceHolder.contains(invoiceNumber)) {
             generateNumber();
         }
@@ -43,6 +52,10 @@ public class Invoice {
             totalNet = totalNet.add(product.getPrice().multiply(quantity));
         }
         return totalNet;
+    }
+
+    public Map<Product, Integer> getProducts() {
+        return products;
     }
 
     public BigDecimal getTaxTotal() {
@@ -77,11 +90,9 @@ public class Invoice {
             String price = String.valueOf(getGrossTotal(entry));
             builder.append("\t")
                     .append(productName)
-                    //.append(" ".repeat(20 - productName.length()))
-                    .append("Quantity: ")
+                    .append(" Quantity: ")
                     .append(quantity)
-                    .append("   ")
-                    .append("Price: ")
+                    .append(" Price: ")
                     .append(price)
                     .append("\n");
         }

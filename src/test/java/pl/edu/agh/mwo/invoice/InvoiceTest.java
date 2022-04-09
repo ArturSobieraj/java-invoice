@@ -152,4 +152,32 @@ public class InvoiceTest {
         int invoiceNumberAfterAddingProducts = invoice.getInvoiceNumber();
         assertEquals(invoiceNumberBeforeAddingProducts, invoiceNumberAfterAddingProducts);
     }
+
+    @Test
+    public void testGetInvoiceNumberAndOneProduct() {
+        String testString = "Invoice number: " + invoice.getInvoiceNumber() + "\n" +
+                "\tChedar Quantity: 3 Price: 32.40\n" +
+                "Product quantity: 1";
+        invoice.addProduct(new DairyProduct("Chedar", new BigDecimal("10")), 3);
+        String result = invoice.toString();
+        assertEquals(result, testString);
+    }
+
+    @Test
+    public void testPrintEmptyInvoice() {
+        String testString = "Invoice number: " + invoice.getInvoiceNumber() + "\n" +
+                "Product quantity: 0";
+        String result = invoice.toString();
+        assertEquals(result, testString);
+    }
+
+    @Test
+    public void testAddTwoSameProducts() {
+        Product secondProduct = new DairyProduct("Chedar", new BigDecimal("10"));
+        invoice.addProduct(new DairyProduct("Chedar", new BigDecimal("10")), 3);
+        invoice.addProduct(secondProduct, 10);
+        int quantity = invoice.getProducts().get(secondProduct);
+        assertEquals(1, invoice.getProducts().size());
+        assertEquals(quantity, 13);
+    }
 }
